@@ -1,0 +1,32 @@
+{
+  "name": "ride-share-market-data",
+  "version": "0.0.1",
+  "description": "Node.js RabbitMQ RPC Application.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Run 'gulp help' for task list\" && exit 0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqp-rpc-factory": "^0.2.0",
+    "bunyan": "^1.0.1",
+    "lodash": "^3.3.1",
+    "mongoose": "~3.8.16",
+    "nconf": "^0.7.1",
+    "q": "^1.0.1",
+    "require-walk": "^0.1.8",
+    "z-schema": "^3.0.0"
+  },
+  "devDependencies": {
+    "async": "^0.9.0",
+    "chai": "^2.1.0",
+    "gulp": "^3.8.8",
+    "gulp-jshint": "^1.8.4",
+    "gulp-task-listing": "^1.0.0",
+    "istanbul": "^0.3.2",
+    "mocha": "^2.0.1",
+    "sinon": "^1.10.3"
+  }
+}
