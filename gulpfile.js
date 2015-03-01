@@ -18,6 +18,11 @@
   gulp.task('default', taskListing);
   gulp.task('help', taskListing);
 
+  gulp.task('init', function () {
+    gulp.src('./config/env/example/*')
+      .pipe(gulp.dest('./config/env'));
+  });
+
   gulp.task('watch-lint', function () {
     gulp.watch(jsLintFiles, ['lint']);
   });

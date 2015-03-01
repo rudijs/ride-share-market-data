@@ -3,7 +3,7 @@
   "messageQueue": {
     "rabbitmq": {
       "user": "rsm",
-      "password": "Y9i6YAgdbW7H",
+      "password": "UPDATE-THIS-PASSWORD",
       "url": "192.168.33.10",
       "vhost": "/rsm"
     },
@@ -16,7 +16,7 @@
     "mongodb": {
       "uri": "mongodb://192.168.33.10",
       "port": 27017,
-      "dbname": "rsm-test"
+      "dbname": "rsm-dev"
     }
   }
 
