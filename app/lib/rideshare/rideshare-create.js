@@ -36,7 +36,7 @@ module.exports = function create(logger, mongoose, rideshare) {
               name: err.errors[error].name,
               path: err.errors[error].path,
               type: err.errors[error].type
-            }
+            };
           })
         });
 

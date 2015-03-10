@@ -153,5 +153,6 @@ describe('Rideshare Delete', function () {
 
     });
 
-  })
+  });
+
 });
