@@ -31,7 +31,7 @@ The container instance will mount a *volume* for log files from the host OS with
 - On the remote server.
 - `sudo docker pull 192.168.33.10:5000/rudijs/rsm-data:0.0.2`
 - `sudo docker rm -f rpc && sudo docker run -d --restart always --name rpc --cap-add SYS_PTRACE --security-opt apparmor:unconfined -v /srv/ride-share-market-data/log:/srv/ride-share-market-data/log 192.168.33.10:5000/rudijs/rsm-data:0.0.2`
-- Note: the *--cap-add SYS_PTRACE --security-opt apparmor:unconfined* flags above are require for pm2.
+- Note: the *--cap-add SYS_PTRACE --security-opt apparmor:unconfined* flags above are required for pm2. See [here](https://github.com/Unitech/PM2/issues/1086)
 
 ## Useful development commands
 

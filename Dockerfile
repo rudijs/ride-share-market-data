@@ -17,7 +17,7 @@ RUN ln -s /usr/local/lib/iojs-v1.4.3-linux-x64/bin/node /usr/local/bin/node
 RUN ln -s /usr/local/lib/iojs-v1.4.3-linux-x64/bin/npm /usr/local/bin/npm
 
 # NPM package cache
-ENV NPM_REFRESHED_AT 2015-03-10.1
+ENV NPM_REFRESHED_AT 2015-03-13.1
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
 RUN npm install -g pm2
