@@ -18,11 +18,19 @@ Development example from a Vagrant VM using the Chef docker cookbook: */etc/defa
 
 ## Deployment
 
+Both host OS and container instance will user an *rsm-data* user account with UID number *2000*.
+
+For the host OS the ride-share-market-devops Chef repo will create this user account.
+
+For the docker container instance the Dockerfile will create this user account.
+
+The container instance will mount a *volume* for log files from the host OS with matching UIDs.
+
 - Build docker image locally, tag it, push it to the private docker registry.
 - `./docker-build.sh 0.0.2`
 - On the remote server.
 - `sudo docker pull 192.168.33.10:5000/rudijs/rsm-data:0.0.2`
-- `sudo docker rm -f rpc && sudo docker run -d --name rpc 192.168.33.10:5000/rudijs/rsm-data:0.0.2`
+- `sudo docker rm -f rpc && sudo docker run -d --restart always --name rpc -v /srv/ride-share-market-data/log:/srv/ride-share-market-data/log 192.168.33.10:5000/rudijs/rsm-data:0.0.2`
 
 ## Useful development commands
 
