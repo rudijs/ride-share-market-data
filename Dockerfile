@@ -3,41 +3,44 @@ FROM ubuntu:14.04
 MAINTAINER Ride Share Market "systemsadmin@ridesharemarket.com"
 
 # APT cache
-ENV APT_REFRESHED_AT 2015-03-07
+ENV APT_REFRESHED_AT 2015-03-14.1
 RUN apt-get -qq update
 
-# Required packages
-RUN apt-get -y install wget
-
-# Install io.js
-RUN wget https://iojs.org/dist/v1.4.3/iojs-v1.4.3-linux-x64.tar.gz
-RUN tar -C /usr/local/lib -zxvf iojs-v1.4.3-linux-x64.tar.gz
-RUN ln -s /usr/local/lib/iojs-v1.4.3-linux-x64/bin/iojs /usr/local/bin/iojs
-RUN ln -s /usr/local/lib/iojs-v1.4.3-linux-x64/bin/node /usr/local/bin/node
-RUN ln -s /usr/local/lib/iojs-v1.4.3-linux-x64/bin/npm /usr/local/bin/npm
+# Install io.js, gpg keys listed at https://github.com/iojs/io.js
+ENV IOJS_VERSION 1.5.1
+RUN apt-get -y install curl \
+&& gpg --keyserver pool.sks-keyservers.net --recv-keys 9554F04D7259F04124DE6B476D5A82AC7E37093B DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
+&& curl -SLO "https://iojs.org/dist/v${IOJS_VERSION}/iojs-v${IOJS_VERSION}-linux-x64.tar.gz" \
+&& curl -SLO "https://iojs.org/dist/v${IOJS_VERSION}/SHASUMS256.txt.asc" \
+&& gpg --verify SHASUMS256.txt.asc \
+&& grep " iojs-v${IOJS_VERSION}-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
+&& tar -xzf "iojs-v${IOJS_VERSION}-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
+&& rm "iojs-v${IOJS_VERSION}-linux-x64.tar.gz" SHASUMS256.txt.asc
 
 # NPM package cache
-ENV NPM_REFRESHED_AT 2015-03-13.1
+ENV NPM_REFRESHED_AT 2015-03-14.1
 COPY package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN npm install -g pm2
+RUN cd /tmp \
+&& npm install \
+&& npm install -g pm2
 
 # Application
-ENV APP_REFRESHED_AT 2015-03-10.4
-RUN mkdir /srv/ride-share-market-data
-RUN cp -a /tmp/node_modules/ /srv/ride-share-market-data
-RUN mkdir /srv/ride-share-market-data/pids
-COPY app/ /srv/ride-share-market-data/app
-COPY config/ /srv/ride-share-market-data/config
-COPY app-rpc-consumer-mongodb.js /srv/ride-share-market-data/app-rpc-consumer-mongodb.js
-COPY package.json /srv/ride-share-market-data/package.json
+ENV APP_REFRESHED_AT 2015-03-14.2
+ENV APP_DIR /srv/ride-share-market-data
+RUN mkdir ${APP_DIR} \
+&& cp -a /tmp/node_modules/ ${APP_DIR} \
+&& mkdir ${APP_DIR}/pids
+COPY app/ ${APP_DIR}/app
+COPY config/ ${APP_DIR}/config
+COPY app-rpc-consumer-mongodb.js ${APP_DIR}/app-rpc-consumer-mongodb.js
+COPY package.json ${APP_DIR}/package.json
 
 # Application User
-RUN useradd -c 'RSM Data' -u 2000 -m -d /home/rsm-data -s /bin/bash rsm-data
-RUN chown -R rsm-data.rsm-data /srv/ride-share-market-data
+RUN useradd -c 'RSM Data' -u 2000 -m -d /home/rsm-data -s /bin/bash rsm-data \
+&& chown -R rsm-data.rsm-data ${APP_DIR}
 USER rsm-data
 ENV HOME /home/rsm-data
 
 # Application Start
-WORKDIR /srv/ride-share-market-data
+WORKDIR ${APP_DIR}
 CMD ["pm2", "start", "config/processes-production.json", "--no-daemon"]
