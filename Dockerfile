@@ -21,7 +21,7 @@ RUN apt-get -y install curl \
 ENV NPM_REFRESHED_AT 2015-03-14.1
 COPY package.json /tmp/package.json
 RUN cd /tmp \
-&& npm install \
+&& npm install --production \
 && npm install -g pm2
 
 # Application
