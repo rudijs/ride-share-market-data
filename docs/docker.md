@@ -18,20 +18,14 @@ Development example from a Vagrant VM using the Chef docker cookbook: */etc/defa
 
 ## Deployment
 
-Both host OS and container instance will user an *rsm-data* user account with UID number *2000*.
-
-For the host OS the ride-share-market-devops Chef repo will create this user account.
-
-For the docker container instance the Dockerfile will create this user account.
-
-The container instance will mount a *volume* for log files from the host OS with matching UIDs.
-
 - Build docker image locally, tag it, push it to the private docker registry.
 - `./docker-build.sh 0.0.2`
 - On the remote server.
-- `sudo docker pull 192.168.33.10:5000/rudijs/rsm-data:0.0.2`
-- `sudo docker rm -f rsm-data && sudo docker run -d --restart always --name rsm-data --cap-add SYS_PTRACE --security-opt apparmor:unconfined -v /srv/ride-share-market-data/log:/srv/ride-share-market-data/log 192.168.33.10:5000/rudijs/rsm-data:0.0.2`
+- `sudo docker pull 192.168.33.10:5000/rudijs/rsm-data:x.x.x`
+- `sudo docker rm -f -v rsm-data && sudo docker run -d --restart always --name rsm-data --cap-add SYS_PTRACE --security-opt apparmor:unconfined 192.168.33.10:5000/rudijs/rsm-data:x.x.x`
 - Note: the *--cap-add SYS_PTRACE --security-opt apparmor:unconfined* flags above are required for pm2. See [here](https://github.com/Unitech/PM2/issues/1086)
+- Note: the docker container will export the application directory as a docker volume.
+- This data-volume is used by other containers (eg. logstash, nginx).
 
 ## Useful development commands
 
