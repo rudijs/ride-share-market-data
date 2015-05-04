@@ -89,8 +89,16 @@ describe('User', function () {
 
     it('should handle database errors', function(done) {
 
-      var stubFind = function (conditions, fields, options, callback) {
-        callback(new Error('Stubbed find()'));
+      var stubFind = function () {
+        return {
+          populate: function() {
+            return {
+              exec: function(callback) {
+                callback(new Error('Stubbed find()'));
+              }
+            };
+          }
+        };
       };
 
       sinon.stub(User, 'find', stubFind);

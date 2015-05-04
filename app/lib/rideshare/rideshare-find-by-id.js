@@ -18,6 +18,10 @@ module.exports = function findById(logger, mongoose, rideshareId) {
     modelName: 'Rideshare',
     conditions: {
       _id: rideshareId
+    },
+    populatePath: 'user',
+    populateSelect: {
+      email: false
     }
   };
 

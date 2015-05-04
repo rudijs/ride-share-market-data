@@ -21,21 +21,32 @@ module.exports = function mongodbFind(logger, mongoose, query) {
   // The model name must be provided
   assert.equal(typeof (query.modelName), 'string', 'argument query.modelName must be a string');
 
-  // Optional mongoose find values that must be type of Object
+  // Optional mongoose find values
   var findConditions = query.conditions || {},
     findFields = query.fields || {},
     findOptions = query.options || {};
 
-  // Optional query values need to be type of Object
+  // Optional mongoose find values type validation
   assert.equal(typeof (findConditions), 'object', 'argument query.conditions must be an object');
   assert.equal(typeof (findFields), 'object', 'argument query.fields must be an object');
   assert.equal(typeof (findOptions), 'object', 'argument query.options must be an object');
+
+  // Optional mongoose query populate values
+  var populatePath = query.populatePath || '',
+    populateSelect = query.populateSelect || {};
+
+  // Optional mongoose query populate values type validation
+  assert.equal(typeof (populatePath), 'string', 'argument query.populatePath must be a string');
+  assert.equal(typeof (populateSelect), 'object', 'argument query.populateSelect must be an object');
 
   var deferred = q.defer();
 
   var Model = mongoose.model(query.modelName);
 
-  Model.find(findConditions, findFields, findOptions, function (err, doc) {
+  Model
+    .find(findConditions, findFields, findOptions)
+    .populate(populatePath, populateSelect)
+    .exec(function (err, doc) {
     if (err) {
 
       logger.error(err);

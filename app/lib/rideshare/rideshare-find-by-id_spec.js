@@ -90,7 +90,6 @@ describe('Rideshare', function () {
 
     });
 
-
     it('should return 404 Not Found', function (done) {
 
       findRideshareById(logger, mongoose, '3449e25a19c8f08214e37dd7').catch(function findRideshareByIdError(err) {
