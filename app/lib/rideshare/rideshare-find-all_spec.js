@@ -40,7 +40,7 @@ if (mongoose.connection.readyState === 0) {
   mongodb.connect();
 }
 
-describe('Rideshares', function () {
+describe('Rideshare', function () {
 
   describe('Find All', function () {
 

@@ -1,7 +1,6 @@
 'use strict';
 
 var should = require('chai').should(),
-  assert = require('chai').assert,
   sinon = require('sinon');
 
 var config = require('../../../config'),
@@ -9,15 +8,15 @@ var config = require('../../../config'),
   mongoDbTestUtils = require(config.get('root') + '/test/util/test-util-mongodb'),
   mongoose = mongodb.mongoose,
   createUser = require(config.get('root') + '/app/lib/user/user-create'),
-  Rideshare = mongoose.model('Rideshare'),
-  createRideshare = require('./rideshare-create');
+  createRideshare = require('./rideshare-create'),
+  findRideshareById = require('./rideshare-find-by-id');
 
 var logger,
   user = {
-    email: 'user@rideshare-create.com',
+    email: 'user@rideshare-find-by-id.com',
     provider: 'google',
     profile: {
-      name: 'Create Rideshare'
+      name: 'Net Citizen'
     }
   },
   rideshare = {
@@ -33,7 +32,7 @@ if (mongoose.connection.readyState === 0) {
   mongodb.connect();
 }
 
-describe('Rideshare Create', function () {
+describe('Rideshare', function () {
 
   // Before each test make sure the database readyState is 1 (connected)
   beforeEach(function (done) {
@@ -53,78 +52,66 @@ describe('Rideshare Create', function () {
     done();
   });
 
-  // Add a test user
+  // Add test user
   beforeEach(function (done) {
 
     createUser(logger, mongoose, user)
       .then(function createUserSuccess(res) {
         should.exist(res._id);
+        user._id = res._id;
         rideshare.user = res._id;
         done();
       }, console.error);
 
   });
 
-  afterEach(function (done) {
-    if (Rideshare.prototype.save.restore) {
-      Rideshare.prototype.save.restore();
-    }
-    done();
-  });
-
-  it('should save a new Rideshare', function (done) {
+  // Add a test rideshares
+  beforeEach(function (done) {
 
     createRideshare(logger, mongoose, rideshare)
       .then(function createRideshareSuccess(res) {
         should.exist(res._id);
         res.user.should.equal(rideshare.user);
-        res.itinerary.from.should.equal('Here');
-        res.itinerary.to.should.equal('There');
+        rideshare._id = res._id;
       })
       .then(done, done);
 
   });
 
-  it('should handle mongoose model validation errors', function (done) {
+  describe('Find By ID', function () {
 
-    createRideshare(logger, mongoose, {invalid: true})
-      .then(console.error, function createRideshareError(err) {
+    it('should find by ID', function (done) {
 
-        // test logging was done
-        sinon.assert.calledOnce(logger.error);
-
-        err.code.should.equal(400);
-        err.message.should.equal('validation_error');
-
-        assert.isArray(err.data, 'Error data should be an Array');
-        err.data[0].name.should.equal('ValidatorError');
-        should.exist(err.data[0].path);
-        should.exist(err.data[0].type);
-
+      findRideshareById(logger, mongoose, rideshare._id.toString()).then(function findRideshareByIdSuccess(res) {
+        res.should.be.instanceof(Array);
+        res[0]._id.should.eql(rideshare._id);
       })
-      .then(done, done);
+        .then(done, done);
 
-  });
+    });
 
-  it('should handle unexpected save errors', function (done) {
 
-    var stubSave = function (callback) {
-      callback(new Error('Stubbed save()'));
-    };
+    it('should return 404 Not Found', function (done) {
 
-    sinon.stub(Rideshare.prototype, 'save', stubSave);
+      findRideshareById(logger, mongoose, '3449e25a19c8f08214e37dd7').catch(function findRideshareByIdError(err) {
+        err.code.should.equal(404);
+        err.message.should.equal('not_found');
+        err.data.should.equal('Rideshare not found.');
+      })
+        .then(done, done);
 
-    createRideshare(logger, mongoose, rideshare)
-      .then(console.error, function createRideshareError(err) {
+    });
 
-        // test logging was done
-        sinon.assert.calledOnce(logger.error);
+    it('should handle database errors', function(done) {
 
+      findRideshareById(logger, mongoose, 'abc123').catch(function findRideshareByIddError(err) {
         err.code.should.equal(500);
         err.message.should.equal('internal_server_error');
         err.data.should.equal('Internal Server Error.');
       })
-      .then(done, done);
+        .then(done, done);
+
+    });
 
   });
 

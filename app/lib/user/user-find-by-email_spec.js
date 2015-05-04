@@ -27,44 +27,44 @@ if (mongoose.connection.readyState === 0) {
 
 describe('User', function () {
 
-  // Before each test make sure the database readyState is 1 (connected)
-  beforeEach(function (done) {
-    mongoDbTestUtils.waitForConnection(mongoose, done);
-  });
-
-  // Before each test nuke the test database, recreate it, rebuild all the indexes
-  beforeEach(function (done) {
-    mongoDbTestUtils.resetDatabase(mongoose, done);
-  });
-
-  // Set up the test logger
-  beforeEach(function (done) {
-    logger = {
-      error: sinon.spy()
-    };
-    done();
-  });
-
-  // Add test users
-  beforeEach(function (done) {
-
-    createUser(logger, mongoose, user)
-      .then(function createUserSuccess(res) {
-        should.exist(res._id);
-        user._id = res._id;
-        done();
-      }, console.error);
-
-  });
-
-  afterEach(function (done) {
-    if (User.find.restore) {
-      User.find.restore();
-    }
-    done();
-  });
-
   describe('Find By Email', function () {
+
+    // Before each test make sure the database readyState is 1 (connected)
+    beforeEach(function (done) {
+      mongoDbTestUtils.waitForConnection(mongoose, done);
+    });
+
+    // Before each test nuke the test database, recreate it, rebuild all the indexes
+    beforeEach(function (done) {
+      mongoDbTestUtils.resetDatabase(mongoose, done);
+    });
+
+    // Set up the test logger
+    beforeEach(function (done) {
+      logger = {
+        error: sinon.spy()
+      };
+      done();
+    });
+
+    // Add test users
+    beforeEach(function (done) {
+
+      createUser(logger, mongoose, user)
+        .then(function createUserSuccess(res) {
+          should.exist(res._id);
+          user._id = res._id;
+          done();
+        }, console.error);
+
+    });
+
+    afterEach(function (done) {
+      if (User.find.restore) {
+        User.find.restore();
+      }
+      done();
+    });
 
     it('should find a user by email', function (done) {
 

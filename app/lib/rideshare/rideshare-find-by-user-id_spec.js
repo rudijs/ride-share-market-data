@@ -9,11 +9,11 @@ var config = require('../../../config'),
   mongoose = mongodb.mongoose,
   createUser = require(config.get('root') + '/app/lib/user/user-create'),
   createRideshare = require('./rideshare-create'),
-  findRideshareById = require('./rideshare-find-by-id');
+  findRideshareByUserId = require('./rideshare-find-by-user-id');
 
 var logger,
   user = {
-    email: 'user@rideshare-find-by-id.com',
+    email: 'user@rideshare-find-by-user-id.com',
     provider: 'google',
     profile: {
       name: 'Net Citizen'
@@ -80,9 +80,9 @@ describe('Rideshare', function () {
 
   describe('Find By ID', function () {
 
-    it('should find a user by ID', function (done) {
+    it('should find a by ID', function (done) {
 
-      findRideshareById(logger, mongoose, rideshare._id.toString()).then(function findRideshareByIdSuccess(res) {
+      findRideshareByUserId(logger, mongoose, rideshare.user.toString()).then(function findRideshareByUserIdSuccess(res) {
         res.should.be.instanceof(Array);
         res[0]._id.should.eql(rideshare._id);
       })
@@ -90,10 +90,9 @@ describe('Rideshare', function () {
 
     });
 
-
     it('should return 404 Not Found', function (done) {
 
-      findRideshareById(logger, mongoose, '3449e25a19c8f08214e37dd7').catch(function findRideshareByIdError(err) {
+      findRideshareByUserId(logger, mongoose, '3449e25a19c8f08214e37dd7').catch(function findRideshareByUserIdError(err) {
         err.code.should.equal(404);
         err.message.should.equal('not_found');
         err.data.should.equal('Rideshare not found.');
@@ -104,7 +103,7 @@ describe('Rideshare', function () {
 
     it('should handle database errors', function(done) {
 
-      findRideshareById(logger, mongoose, 'abc123').catch(function findRideshareByIddError(err) {
+      findRideshareByUserId(logger, mongoose, 'abc123').catch(function findRideshareByUserIdError(err) {
         err.code.should.equal(500);
         err.message.should.equal('internal_server_error');
         err.data.should.equal('Internal Server Error.');

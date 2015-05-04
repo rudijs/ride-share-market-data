@@ -28,25 +28,25 @@ var logger,
 
 describe('User', function () {
 
-  // Before each test make sure the database readyState is 1 (connected)
-  beforeEach(function (done) {
-    mongoDbTestUtils.waitForConnection(mongoose, done);
-  });
-
-  // Before each test nuke the test database, recreate it, rebuild all the indexes
-  beforeEach(function (done) {
-    mongoDbTestUtils.resetDatabase(mongoose, done);
-  });
-
-  // Set up the test logger
-  beforeEach(function (done) {
-    logger = {
-      error: sinon.spy()
-    };
-    done();
-  });
-
   describe('Sign In', function () {
+
+    // Before each test make sure the database readyState is 1 (connected)
+    beforeEach(function (done) {
+      mongoDbTestUtils.waitForConnection(mongoose, done);
+    });
+
+    // Before each test nuke the test database, recreate it, rebuild all the indexes
+    beforeEach(function (done) {
+      mongoDbTestUtils.resetDatabase(mongoose, done);
+    });
+
+    // Set up the test logger
+    beforeEach(function (done) {
+      logger = {
+        error: sinon.spy()
+      };
+      done();
+    });
 
     describe('New User', function () {
 
