@@ -16,7 +16,11 @@ var logger,
     email: 'user@rideshare-find-by-id.com',
     provider: 'google',
     profile: {
-      name: 'Net Citizen'
+      name: 'Net Citizen',
+      url: "https://plus.google.com/103434308786179622443",
+      image: {
+        url: "https://lh3.googleusercontent.com/-XdUIqdMkCWC/AAAAAAAAAAI/AAAAAAAAAAA/6252fscbu5M/photo.jpg?sz=50"
+      }
     }
   },
   rideshare = {
@@ -84,7 +88,7 @@ describe('Rideshare', function () {
 
       findRideshareById(logger, mongoose, rideshare._id.toString()).then(function findRideshareByIdSuccess(res) {
         res.should.be.instanceof(Array);
-        res[0]._id.should.eql(rideshare._id);
+        res[0]._id.should.equal(rideshare._id.toString());
       })
         .then(done, done);
 

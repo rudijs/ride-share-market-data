@@ -4,7 +4,8 @@ var assert = require('assert'),
   q = require('q');
 
 var config = require('../../../config'),
-  mongodbFind = require(config.get('root') + '/app/lib/util/util-mongodb-find');
+  mongodbFind = require(config.get('root') + '/app/lib/util/util-mongodb-find'),
+  userFilter = require(config.get('root') + '/app/lib/user/user-profile-filter.js');
 
 module.exports = function findById(logger, mongoose, rideshareId) {
 
@@ -36,7 +37,14 @@ module.exports = function findById(logger, mongoose, rideshareId) {
         });
       }
       else {
-        deferred.resolve(res);
+
+        // We want to filter and alter the returned user properties
+        // The MongooseJS User model is preventing this, so we'll strip out
+        // the mongoose model behavior, then filter/update the user properties.
+        var rideshare = JSON.parse(JSON.stringify(res));
+        rideshare[0].user = userFilter(rideshare[0].user);
+
+        deferred.resolve(rideshare);
       }
 
     })
