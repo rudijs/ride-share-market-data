@@ -42,7 +42,10 @@ module.exports = function findById(logger, mongoose, rideshareId) {
         // The MongooseJS User model is preventing this, so we'll strip out
         // the mongoose model behavior, then filter/update the user properties.
         var rideshare = JSON.parse(JSON.stringify(res));
-        rideshare[0].user = userFilter(rideshare[0].user);
+        rideshare[0].user = {
+          _id: rideshare[0].user._id,
+          providers: userFilter(rideshare[0].user)
+        };
 
         deferred.resolve(rideshare);
       }

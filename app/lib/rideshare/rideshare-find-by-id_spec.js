@@ -17,9 +17,9 @@ var logger,
     provider: 'google',
     profile: {
       name: 'Net Citizen',
-      url: "https://plus.google.com/103434308786179622443",
+      url: 'https://plus.google.com/103434308786179622443',
       image: {
-        url: "https://lh3.googleusercontent.com/-XdUIqdMkCWC/AAAAAAAAAAI/AAAAAAAAAAA/6252fscbu5M/photo.jpg?sz=50"
+        url: 'https://lh3.googleusercontent.com/-XdUIqdMkCWC/AAAAAAAAAAI/AAAAAAAAAAA/6252fscbu5M/photo.jpg?sz=50'
       }
     }
   },
@@ -83,6 +83,7 @@ describe('Rideshare', function () {
   });
 
   describe('Find By ID', function () {
+
 
     it('should find by ID', function (done) {
 
