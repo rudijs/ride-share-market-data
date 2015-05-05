@@ -15,7 +15,7 @@ module.exports = function update(logger, mongoose, rideshare) {
 
   var Rideshare = mongoose.model('Rideshare');
 
-  Rideshare.findByIdAndUpdate(rideshare._id, rideshare, function (err, doc) {
+  Rideshare.findByIdAndUpdate(rideshare._id, {itinerary: rideshare.itinerary}, function (err, doc) {
     if(err) {
       logger.error(err);
       deferred.reject({
