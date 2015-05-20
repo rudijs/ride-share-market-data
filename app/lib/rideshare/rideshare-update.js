@@ -15,19 +15,25 @@ module.exports = function update(logger, mongoose, rideshare) {
 
   var Rideshare = mongoose.model('Rideshare');
 
-  Rideshare.findByIdAndUpdate(rideshare._id, {itinerary: rideshare.itinerary}, function (err, doc) {
-    if(err) {
-      logger.error(err);
-      deferred.reject({
-        code: 500,
-        message: 'internal_server_error',
-        data: 'Internal Server Error.'
-      });
-    }
-    else {
-      deferred.resolve(doc);
-    }
-  });
+  Rideshare.findByIdAndUpdate(
+    rideshare._id,
+    {
+      itinerary: rideshare.itinerary,
+      updated_at: Date.now()
+    },
+    function (err, doc) {
+      if (err) {
+        logger.error(err);
+        deferred.reject({
+          code: 500,
+          message: 'internal_server_error',
+          data: 'Internal Server Error.'
+        });
+      }
+      else {
+        deferred.resolve(doc);
+      }
+    });
 
   return deferred.promise;
 
