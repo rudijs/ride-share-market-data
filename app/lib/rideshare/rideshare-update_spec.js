@@ -104,7 +104,7 @@ describe('Rideshare', function () {
 
     it('should handle errors', function (done) {
 
-      var stubFindByIdAndUpdate = function (id, rideshare, callback) {
+      var stubFindByIdAndUpdate = function (id, rideshare, options, callback) {
         callback(new Error('Stubbed findByIdAndUpdate()'));
       };
 

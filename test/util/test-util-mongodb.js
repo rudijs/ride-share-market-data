@@ -34,7 +34,7 @@ exports.waitForConnection = function waitForConnection(mongoose, callback) {
  */
 exports.resetDatabase = function resetDatabase(mongoose, callback) {
 
-  mongoose.connection.db.executeDbCommand({dropDatabase: 1}, function (err) {
+  mongoose.connection.db.command({dropDatabase: 1}, function (err) {
     if (err) {
       console.log('dropDatabase:', err);
     }

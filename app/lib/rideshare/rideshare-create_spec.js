@@ -99,10 +99,10 @@ describe('Rideshare', function () {
           err.message.should.equal('validation_error');
 
           assert.isArray(err.data, 'Error data should be an Array');
+          err.data[0].hasOwnProperty('name').should.be.true;
+          err.data[0].hasOwnProperty('path').should.be.true;
+          err.data[0].hasOwnProperty('type').should.be.true;
           err.data[0].name.should.equal('ValidatorError');
-          should.exist(err.data[0].path);
-          should.exist(err.data[0].type);
-
         })
         .then(done, done);
 

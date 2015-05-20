@@ -36,29 +36,28 @@ module.exports = function removeRideshare(logger, mongoose, rpcParams) {
 
   validateRpcParams(rpcParams).then(
     function validateRpcParamsSuccess() {
-      Rideshare.remove({_id: rpcParams.id}, function (err, numberRemoved) {
-        if (err) {
-          logger.error(err);
-          deferred.reject({
-            code: 500,
-            message: 'internal_server_error',
-            data: 'Internal Server Error.'
-          });
-        }
-        else {
-          // check numberRemoved by the remove() action
-          if(numberRemoved) {
-            deferred.resolve(rpcParams.id);
-          }
-          else {
-            logger.error('404 Remove RideshareId: ' + rpcParams.id);
+      Rideshare.findByIdAndRemove(rpcParams.id, {select: "_id"}, function(err, doc) {
+          if (err) {
+            logger.error(err);
             deferred.reject({
-              code: 404,
-              message: 'not_found',
-              data: 'Rideshare not found.'
+              code: 500,
+              message: 'internal_server_error',
+              data: 'Internal Server Error.'
             });
           }
-        }
+          else {
+            if(!doc) {
+              logger.error('404 Remove RideshareId: ' + rpcParams.id);
+              deferred.reject({
+                code: 404,
+                message: 'not_found',
+                data: 'Rideshare not found.'
+              });
+            }
+            else {
+              deferred.resolve(doc);
+            }
+          }
       });
     },
     function validateRpcParamsError(err) {

@@ -21,6 +21,9 @@ module.exports = function update(logger, mongoose, rideshare) {
       itinerary: rideshare.itinerary,
       updated_at: Date.now()
     },
+    {
+      new: true
+    },
     function (err, doc) {
       if (err) {
         logger.error(err);

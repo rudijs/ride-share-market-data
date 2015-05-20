@@ -94,7 +94,7 @@ describe('Rideshare', function () {
 
         deleteRideshare(logger, mongoose, {id: rideshare._id})
           .then(function deleteRideshareSuccess(res) {
-            res.should.equal(rideshare._id);
+            res._id.should.eql(rideshare._id);
           })
           .then(done, done);
 
@@ -102,9 +102,7 @@ describe('Rideshare', function () {
 
       it('should return 404 for unknown Rideshare', function (done) {
 
-        deleteRideshare(logger, mongoose, {id: '546b76317c5ae961209cd544'})
-          .catch(function deleteRideshareError(err) {
-
+        deleteRideshare(logger, mongoose, {id: '546b76317c5ae961209cd544'}).catch(function deleteRideshareError(err) {
             // test logging was done
             sinon.assert.calledOnce(logger.error);
 
@@ -118,11 +116,11 @@ describe('Rideshare', function () {
 
       it('should handle unexpected remove errors', function (done) {
 
-        var stubRemove = function (query, callback) {
+        var stubFindByIdAndRemove = function (id, options, callback) {
           callback(new Error('Stubbed remove()'));
         };
 
-        sinon.stub(Rideshare, 'remove', stubRemove);
+        sinon.stub(Rideshare, 'findByIdAndRemove', stubFindByIdAndRemove);
 
         deleteRideshare(logger, mongoose, {id: rideshare._id})
           .catch(function deleteRideshareError(err) {
