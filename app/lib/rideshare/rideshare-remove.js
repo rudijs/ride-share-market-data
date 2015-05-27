@@ -36,7 +36,7 @@ module.exports = function removeRideshare(logger, mongoose, rpcParams) {
 
   validateRpcParams(rpcParams).then(
     function validateRpcParamsSuccess() {
-      Rideshare.findByIdAndRemove(rpcParams.id, {select: "_id"}, function(err, doc) {
+      Rideshare.findByIdAndRemove(rpcParams.id, {select: '_id'}, function(err, doc) {
           if (err) {
             logger.error(err);
             deferred.reject({
