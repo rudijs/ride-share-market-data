@@ -1,7 +1,8 @@
 'use strict';
 
 var should = require('chai').should(),
-  sinon = require('sinon');
+  sinon = require('sinon'),
+  fs = require('fs');
 
 var config = require('../../../config'),
   mongodb = require(config.get('root') + '/config/mongodb'),
@@ -9,22 +10,16 @@ var config = require('../../../config'),
   mongoDbTestUtils = require(config.get('root') + '/test/util/test-util-mongodb'),
   userSignIn = require('./user-sign-in'),
   createUser = require('./user-create'),
-  User = mongoose.model('User');
+  User = mongoose.model('User'),
+  newUserGoogleFixture = JSON.parse(fs.readFileSync(config.get('root') + '/test/fixtures/new-user-google.json')),
+  newUserFacebookFixture = JSON.parse(fs.readFileSync(config.get('root') + '/test/fixtures/new-user-facebook.json'));
 
 // Connect to database if not already connected from other tests
 if (mongoose.connection.readyState === 0) {
   mongodb.connect();
 }
 
-var logger,
-  newUser = {
-    email: 'user@signin.com',
-    provider: 'google',
-    profile: {
-      name: 'User SignIn',
-      gender: 'male'
-    }
-  };
+var logger;
 
 describe('User', function () {
 
@@ -70,8 +65,8 @@ describe('User', function () {
 
       it('should sign in a brand new user', function (done) {
 
-        userSignIn(logger, mongoose, newUser).then(function userSignInSuccess(res) {
-          res.email.should.equal(newUser.email);
+        userSignIn(logger, mongoose, newUserGoogleFixture).then(function userSignInSuccess(res) {
+          res.email.should.equal(newUserGoogleFixture.email);
           should.exist(res._id);
         })
           .then(done, done);
@@ -86,7 +81,7 @@ describe('User', function () {
 
         sinon.stub(User.prototype, 'save', stubSave);
 
-        userSignIn(logger, mongoose, newUser).catch(function userSignInError(err) {
+        userSignIn(logger, mongoose, newUserGoogleFixture).catch(function userSignInError(err) {
           err.code.should.equal(500);
           err.message.should.equal('internal_server_error');
           err.data.should.equal('Internal Server Error.');
@@ -99,15 +94,15 @@ describe('User', function () {
 
     describe('Existing User', function () {
 
-      var existingUserId;
+      var existingUser;
 
       // Create an existing user
       beforeEach(function (done) {
 
-        createUser(logger, mongoose, newUser)
+        createUser(logger, mongoose, newUserGoogleFixture)
           .then(function createUserSuccess(res) {
             should.exist(res._id);
-            existingUserId = res._id.toString();
+            existingUser = res;
             done();
           }, console.error);
 
@@ -115,9 +110,20 @@ describe('User', function () {
 
       it('should sign in an existing new user', function (done) {
 
-        userSignIn(logger, mongoose, newUser).then(function userSignInSuccess(res) {
-          res.email.should.equal(newUser.email);
-          res._id.toString().should.equal(existingUserId);
+        userSignIn(logger, mongoose, newUserGoogleFixture).then(function (res) {
+          res.email.should.equal(newUserGoogleFixture.email);
+          res._id.toString().should.equal(existingUser._id.toString());
+        })
+          .then(done, done);
+
+      });
+
+      it('should sign in an existing new user with a new provider', function (done) {
+
+        userSignIn(logger, mongoose, newUserFacebookFixture).then(function (res) {
+          res.email.should.equal(newUserGoogleFixture.email);
+          res.currentProvider.should.equal('facebook');
+          res._id.toString().should.equal(existingUser.id.toString());
         })
           .then(done, done);
 

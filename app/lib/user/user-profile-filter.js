@@ -18,9 +18,9 @@ module.exports = function userProfileFilter(user) {
     },
     facebook: function (providers) {
       return {
-        displayName: providers.facebook.displayName,
-        url: providers.facebook.url,
-        image: providers.facebook.image.url
+        displayName: providers.facebook.name,
+        url: providers.facebook.link,
+        image: 'https://graph.facebook.com/' + providers.facebook.id + '/picture'
       };
     }
 

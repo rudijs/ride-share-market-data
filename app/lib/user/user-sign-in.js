@@ -6,7 +6,8 @@ var assert = require('assert'),
 var config = require('../../../config'),
   userValidator = require(config.get('root') + '/app/lib/util/util-json-validate').userValidator,
   findUserByEmail = require('./user-find-by-email'),
-  createUser = require('./user-create');
+  createUser = require('./user-create'),
+  updateUserProvider = require('./user-provider-update');
 
 /*
  signin
@@ -34,7 +35,11 @@ module.exports = function signIn(logger, mongoose, user) {
     })
     .then(
     function findUserByEmailSuccess(res) {
-      deferred.resolve(res[0]);
+      // Found user, update their existing oauth provider details.
+      // Oauth provider details are updated every time (and only) when the user signs in.
+      // There is no offline oauth activity/updates.
+      return updateUserProvider(logger, mongoose, res[0], user);
+      //deferred.resolve(res[0]);
     },
     function findUserByEmail(err) {
       if (err.code && err.code === 404) {
