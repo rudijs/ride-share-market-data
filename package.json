@@ -1,6 +1,6 @@
 {
   "name": "ride-share-market-data",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Node.js RabbitMQ RPC Application.",
   "main": "index.js",
   "private": true,
@@ -13,7 +13,7 @@
     "amqp-rpc-factory": "^0.2.9",
     "bunyan": "^1.0.1",
     "lodash": "^3.9.3",
-    "mongoose": "^4.0.3",
+    "mongoose": "^4.0.4",
     "nconf": "^0.7.1",
     "q": "^1.4.1",
     "ramda": "^0.14.0",
