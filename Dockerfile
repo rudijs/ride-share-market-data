@@ -2,7 +2,6 @@ FROM rudijs/rsm-iojs:0.0.1
 MAINTAINER Ride Share Market "systemsadmin@ridesharemarket.com"
 
 # NPM package cache
-ENV NPM_REFRESHED_AT 2015-04-05.1
 COPY package.json /tmp/package.json
 RUN \
     cd /tmp && \
@@ -11,7 +10,7 @@ RUN \
     npm cache clean
 
 # Application
-ENV APP_REFRESHED_AT 2015-04-05.1
+ENV APP_REFRESHED_AT 2015-06-04.1
 ENV APP_DIR /srv/ride-share-market-data
 RUN \
     mkdir ${APP_DIR} && \
