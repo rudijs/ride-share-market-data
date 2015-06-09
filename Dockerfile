@@ -21,6 +21,7 @@ COPY app/ ${APP_DIR}/app
 COPY config/ ${APP_DIR}/config
 COPY app-rpc-consumer-mongodb.js ${APP_DIR}/app-rpc-consumer-mongodb.js
 COPY package.json ${APP_DIR}/package.json
+COPY docker-start.sh ${APP_DIR}/docker-start.sh
 
 # Application User
 RUN \
@@ -29,13 +30,13 @@ RUN \
 
 USER rsm-data
 
-ENV HOME /home/rsm-data
-
 # Export the APP_DIR as a data volume under the app user account.
 # Other containers use this volume's data (eg. logstash, nginx).
 VOLUME ${APP_DIR}
 
+USER root
+
 # Application Start
 WORKDIR ${APP_DIR}
 
-CMD ["pm2", "start", "config/processes-production.json", "--no-daemon"]
+CMD ["./docker-start.sh"]
